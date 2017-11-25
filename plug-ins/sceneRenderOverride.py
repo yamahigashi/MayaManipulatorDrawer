@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 '''Custom Render Override for drawnig Manipulator even during playback.'''
-"""Custom Render Override for drawnig Manipulator even during playback."""
 ###############################################################################
 import sys
 import math
@@ -258,6 +257,7 @@ class DrawManipulatorOverride(omr.MRenderOverride):
             omr.MPresentTarget("present")
         ]
 
+        self.operations[0].clearOperation().setOverridesColors(False)
         super(DrawManipulatorOverride, self).__init__(name)
 
     def uiName(self):
