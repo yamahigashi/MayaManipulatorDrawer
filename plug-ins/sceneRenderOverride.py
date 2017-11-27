@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-'''Custom Render Override for drawnig Manipulator even during playback.'''
 """Custom Render Override for drawnig Manipulator even during playback."""
 ###############################################################################
 import sys
