@@ -39,6 +39,7 @@ Manipulators size of all viewport will be applied to the current active one.
 ### You may also like...
 * https://github.com/ShikouYamaue/SISideBar
 * https://github.com/mochio326/SiShelf
+* https://redglasses67.jimdo.com/2017/04/16/maya-displayselectedname/
 * https://github.com/yamahigashi/MayaStickySupraTool
 
 ---
