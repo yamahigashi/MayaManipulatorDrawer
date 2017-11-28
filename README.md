@@ -7,15 +7,15 @@ Custom render override plugin for drawing manipulator even during playback for A
 
 ### Limitation
 
-VP2.0 needed.
+Maya2017+, VP2.0 needed.
 
 Install
 -------
 
 ### before maya launch
 
-* [Download Source code (zip)](https://github.com/yamahigashi/MayaManipulatorDrawer/releases/latest) this repository and extract .zip to (e.g. C:\someplace\MayaStickySupraTool)
-* Edit maya.env and append to MAYA_MODULE_PATH this module like below, or append this extracted folder to `MAYA_MODULE_PATH`.
+* [Download Source code (zip)](https://github.com/yamahigashi/MayaManipulatorDrawer/releases/latest) from release page and extract .zip to (e.g. C:\someplace\MayaManipulatorDrawer)
+* Edit maya.env and add MAYA_MODULE_PATH with this module like below or append this extracted folder to `MAYA_MODULE_PATH`.
 
 ```file:bat
 MAYA_MODULE_PATH=C:\someplace\MayaManipulatorDrawer
@@ -29,7 +29,7 @@ MAYA_MODULE_PATH=some\great\module;C:\someplace\MayaManipulatorDrawer
 
 
 ### after launch maya
-
+* Activate sceneRenderOverride.py in the `Plug-in Manager` window.
 * Switch viewport Renderer to `Manipulator drawer` to take effect.
 
 
