@@ -45,6 +45,8 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
     def _initializeTemporalyVariables(self):
         # type: () -> None
 
+        self.hiColor = om.MColor(om.MVector(1, 1, 0))
+
         self.xcolor = om.MColor(om.MVector(1, 0, 0))
         self.xmat = om.MMatrix((
             (1, 0, 0, 0),
@@ -97,11 +99,11 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
         if not target:
             return True
 
-        tool = self._getToolContext()
+        tool, axis = self._getToolContext()
         if not tool:
             return True
 
-        self._draw(drawManager, target, tool)
+        self._draw(drawManager, target, tool, axis)
         return True
 
     # ------------------------------------------------------------------------
@@ -119,22 +121,29 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
         return target
 
     def _getToolContext(self):
-        # type: () -> Text
-        """Return current current tool context as Text, "move" or "rotate"."""
+        # type: () -> Tuple[Text]
+        """Return current current tool context and activeHandle as Text.
+
+        context: "move" or "rotate"
+        activeAxis: int [0: x, 1: y, 2:z, 3:not restricted]
+
+        """
 
         ctx = mel.eval("currentCtx;")  # type: Text
         if "move" in ctx.lower():
-            return "move"
+            activeHandle = mel.eval("manipMoveContext -q -currentActiveHandle Move;")
+            return "move", activeHandle
 
         elif "rotate" in ctx.lower():
-            return "rotate"
+            activeHandle = mel.eval("manipRotateContext -q -currentActiveHandle Rotate;")
+            return "rotate", activeHandle
 
-        return ""
+        return "", None
 
     # ------------------------------------------------------------------------
 
-    def _draw(self, manager, dagPath, tool):
-        # type: (omui.MUIDrawManager, om.MDagPath, Text) -> None
+    def _draw(self, manager, dagPath, tool, activeAxis):
+        # type: (omui.MUIDrawManager, om.MDagPath, Text, int) -> None
         """Draw manipulator shape using MUIDrawManager.
 
         Depending the tool context, draw arrow gizmo or spherical gizmo.
@@ -154,16 +163,20 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
         point = om.MPoint(posx, posy, posz)
 
         manager.beginDrawable()
+        xcol = self.hiColor if activeAxis == 0 else self.xcolor
+        ycol = self.hiColor if activeAxis == 1 else self.ycolor
+        zcol = self.hiColor if activeAxis == 2 else self.zcolor
+
 
         if "move" == tool:
-            self._drawArrow(manager, point, worldMat, rotMat, self.xmat, self.xcolor)
-            self._drawArrow(manager, point, worldMat, rotMat, self.ymat, self.ycolor)
-            self._drawArrow(manager, point, worldMat, rotMat, self.zmat, self.zcolor)
+            self._drawArrow(manager, point, worldMat, rotMat, self.xmat, xcol)
+            self._drawArrow(manager, point, worldMat, rotMat, self.ymat, ycol)
+            self._drawArrow(manager, point, worldMat, rotMat, self.zmat, zcol)
 
         elif "rotate" == tool:
-            self._drawCircle(manager, point, worldMat, rotMat, self.xmat, self.xcolor)
-            self._drawCircle(manager, point, worldMat, rotMat, self.ymat, self.ycolor)
-            self._drawCircle(manager, point, worldMat, rotMat, self.zmat, self.zcolor)
+            self._drawCircle(manager, point, worldMat, rotMat, self.xmat, xcol)
+            self._drawCircle(manager, point, worldMat, rotMat, self.ymat, ycol)
+            self._drawCircle(manager, point, worldMat, rotMat, self.zmat, zcol)
 
         manager.endDrawable()
 
@@ -273,7 +286,7 @@ class DrawManipulatorOverride(omr.MRenderOverride):
         super(DrawManipulatorOverride, self).cleanup()
 
     def supportedDrawAPIs(self):
-        # type: () -> None
+        # type: () -> int
         return omr.MRenderer.kAllDevices
 
     def startOperationIterator(self):
