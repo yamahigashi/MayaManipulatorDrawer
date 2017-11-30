@@ -162,11 +162,11 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
         posz = worldMat.getElement(3, 2)
         point = om.MPoint(posx, posy, posz)
 
-        manager.beginDrawable()
         xcol = self.hiColor if activeAxis == 0 else self.xcolor
         ycol = self.hiColor if activeAxis == 1 else self.ycolor
         zcol = self.hiColor if activeAxis == 2 else self.zcolor
 
+        manager.beginDrawInXray()
 
         if "move" == tool:
             self._drawArrow(manager, point, worldMat, rotMat, self.xmat, xcol)
@@ -178,7 +178,7 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
             self._drawCircle(manager, point, worldMat, rotMat, self.ymat, ycol)
             self._drawCircle(manager, point, worldMat, rotMat, self.zmat, zcol)
 
-        manager.endDrawable()
+        manager.endDrawInXray()
 
     def _drawArrow(self, manager, basePoint, worldMat, rotMat, distanceMat, color):
         # type: (omui.MUIDrawManager, om.MPoint, om.MMatrix, om.MMatrix, om.MMatrix, om.MColor) -> None
