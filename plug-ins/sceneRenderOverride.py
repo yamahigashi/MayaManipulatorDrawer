@@ -92,7 +92,7 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
     def addUIDrawables(self, drawManager, frameContext):
         # type: (omui.MUIDrawManager, omr.MFrameContext) -> bool
 
-        if not omani.MAnimControl.isPlaying():
+        if (not omani.MAnimControl.isPlaying() and not omani.MAnimControl.isScrubbing()):
             return False
 
         target = self._getTargetDagPath()
