@@ -95,31 +95,22 @@ class ManipulatorSceneRender(omr.MUserRenderOperation):
         if (not omani.MAnimControl.isPlaying() and not omani.MAnimControl.isScrubbing()):
             return False
 
-        target = self._getTargetDagPath()
-        if not target:
+        sel = om.MGlobal.getActiveSelectionList()
+        length = sel.length()
+        if 0 == length:
             return True
 
         tool, axis = self._getToolContext()
         if not tool:
             return True
 
-        self._draw(drawManager, target, tool, axis)
+        for i in range(length):
+            target_dagpath, _mobj = sel.getComponent(i)
+            self._draw(drawManager, target_dagpath, tool, axis)
+
         return True
 
     # ------------------------------------------------------------------------
-
-    def _getTargetDagPath(self):
-        # type: () -> om.MDagPath
-        """Return current selection object's dagPath."""
-
-        sel = om.MGlobal.getActiveSelectionList()
-        len = sel.length()
-        if 0 == len:
-            return
-
-        target = sel.getComponent(len - 1)[0]
-        return target
-
     def _getToolContext(self):
         # type: () -> Tuple[Text]
         """Return current current tool context and activeHandle as Text.
